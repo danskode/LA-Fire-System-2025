@@ -53,22 +53,8 @@ function loadMain() {
             }
 
             let html = `
-                <H1>Main Page</H1>
-                <div>
-                    <form id="fireName">
-                      <label for="fireName">Name fire:</label>
-                      <input type="text" id="fireName" placeholder="Name fire">
-                      <label for="latitude">Latitude:</label>
-                      <input type="number" step="any" id="latitude" placeholder="Add latitude">
-                      <label for="longitude">Longitude:</label>
-                      <input type="number" step="any" id="longitude" placeholder="Add longitude">
-                      <button onclick="createFire()">Save and activate</button>
-                  </form>
-                </div>
-               
-
-
-                <h2>Aktive Fires</h2>
+                 
+                <h1>Active Fires</h1>
                                     <table>
                                         <thead>
                                             <tr>
@@ -97,6 +83,22 @@ function loadMain() {
             });
 
             html += `</tbody></table>`;
+
+            html += `
+                    <br>
+                    <h1>New fire 🔥</h1>
+                    <div>
+                        <form id="fireName">
+                          <label for="fireName">Name fire:</label>
+                          <input type="text" id="fireName" placeholder="Name fire">
+                          <label for="latitude">Latitude:</label>
+                          <input type="number" step="any" id="latitude" placeholder="Add latitude">
+                          <label for="longitude">Longitude:</label>
+                          <input type="number" step="any" id="longitude" placeholder="Add longitude">
+                          <button onclick="createFire()">Save and activate</button>
+                      </form>
+                    </div>`
+
             content.innerHTML = html;
         })
         .catch(error => {
@@ -182,13 +184,13 @@ function loadFires() {
             let th1 = document.createElement("th");
             th1.textContent = "ID";
             let th2 = document.createElement("th");
-            th2.textContent = "Navn";
+            th2.textContent = "Name";
             let th3 = document.createElement("th");
             th3.textContent = "Latitude";
             let th4 = document.createElement("th");
             th4.textContent = "Longitude";
             let th5 = document.createElement("th");
-            th5.textContent = "Aktiv";
+            th5.textContent = "Status";
             tr.appendChild(th1);
             tr.appendChild(th2);
             tr.appendChild(th3);
@@ -209,8 +211,17 @@ function loadFires() {
                     let td4 = document.createElement("td");
                     td4.textContent = fire.longitude;
                     let td5 = document.createElement("td");
-                    td5.textContent = fire.active;
-                    tr.appendChild(td1);
+                    //td5.innerHTML = fire.active ? "<span class='danger'>DANGER: Fire's burning</span>" : "PEACE: Fire's out";
+                    if (fire.active) {
+                        td5.innerHTML = "DANGER: Fire's burning";
+                        td5.style.color = "red";
+                        td5.style.fontWeight = "bold";
+                    } else {
+                        td5.textContent = "PEACE: Fire's out";
+                    }
+
+
+                tr.appendChild(td1);
                     tr.appendChild(td2);
                     tr.appendChild(td3);
                     tr.appendChild(td4);
@@ -225,7 +236,7 @@ function loadFires() {
             content.appendChild(table);
         })
         .catch(error => {
-            console.error("Fejl ved indlæsning af fires:", error);
+            console.error("Error retrieving fires:", error);
         });
 }
 
@@ -294,7 +305,7 @@ function loadSirens() {
             content.appendChild(table);
         })
         .catch(error => {
-            console.error("Fejl ved indlæsning af sirener:", error);
+            console.error("Error retrieving sirens:", error);
         });
 }
 

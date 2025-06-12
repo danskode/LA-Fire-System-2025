@@ -56,3 +56,11 @@ th, td {
     right: 10px;
     cursor: pointer;
 }
+
+.danger {
+    .danger {
+        color: red !important;
+        font-weight: bold !important;
+    }
+
+}
