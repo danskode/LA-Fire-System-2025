@@ -1,9 +1,11 @@
 package org.kea.nicolainielsen.alarm;
 
 import org.hibernate.loader.ast.internal.SingleIdArrayLoadPlan;
+import org.kea.nicolainielsen.config.GeoTools;
 import org.kea.nicolainielsen.fire.FireModel;
 import org.kea.nicolainielsen.fire.FireServiceImpl;
 import org.kea.nicolainielsen.siren.SirenModel;
+import org.kea.nicolainielsen.siren.SirenRepository;
 import org.kea.nicolainielsen.siren.SirenServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +18,17 @@ import java.util.List;
 public class AlarmServiceImpl implements AlarmService {
 
     private final AlarmRepository alarmRepository;
+    private final SirenRepository sirenRepository;
     private SirenServiceImpl sirenServiceImpl;
     private FireServiceImpl fireServiceImpl;
-    public AlarmServiceImpl(AlarmRepository alarmRepository,  SirenServiceImpl sirenServiceImpl, FireServiceImpl fireServiceImpl) {
+    private GeoTools geoTools;
+
+    public AlarmServiceImpl(AlarmRepository alarmRepository, SirenServiceImpl sirenServiceImpl, FireServiceImpl fireServiceImpl, GeoTools geoTools, SirenRepository sirenRepository) {
         this.alarmRepository = alarmRepository;
         this.sirenServiceImpl = sirenServiceImpl;
         this.fireServiceImpl = fireServiceImpl;
+        this.geoTools = geoTools;
+        this.sirenRepository = sirenRepository;
     }
 
     @Override
@@ -44,13 +51,13 @@ public class AlarmServiceImpl implements AlarmService {
         FireModel fire = fireServiceImpl.getFireModelbyID(fireId);
 
         if (fire == null) {
-            new RuntimeException("Fire Model with ID " + fireId + " not found");
+            throw new RuntimeException("Fire Model with ID " + fireId + " not found");
         }
 
         List<SirenModel> allSirens = sirenServiceImpl.findAllSirens();
 
         for (SirenModel siren : allSirens) {
-            double distance = calculateDistance(
+            double distance = geoTools.distanceInKm(
                     fire.getLatitude(), fire.getLongitude(),
                     siren.getLatitude(), siren.getLongitude()
             );
@@ -64,21 +71,13 @@ public class AlarmServiceImpl implements AlarmService {
                 alarmRepository.save(alarm);
 
                 siren.setActive(true);
+                siren.setLastActived(LocalDateTime.now());
                 sirenServiceImpl.save(siren);
+                System.out.println("Alarm created for siren: " + siren.getName());
+
+//                System.out.println(siren.getName() + " " + siren.isActive() );
             }
         }
-    }
-
-    // Haversine-formula ... something clever rom ChatGPT ...
-    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        final int R = 6371; // km
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
     }
 
     @Override
@@ -93,6 +92,25 @@ public class AlarmServiceImpl implements AlarmService {
         }
         return allAlarmsRelatedToFireID;
     }
+
+    // Stop alarms ...
+    @Override
+    public void stopAlarmAndUpdateSiren(int alarmId) {
+        AlarmModel alarm = findById(alarmId);
+        if (alarm != null) {
+            alarm.setActive(false);
+            alarm.setAlarmEnded(LocalDateTime.now());
+            save(alarm);
+
+            // Opdater siren
+            SirenModel siren = alarm.getSiren();
+            siren.setLastActived(LocalDateTime.now());
+            // Tilføj eventuelt andre opdateringer af siren her
+            sirenRepository.save(siren);
+        }
+    }
+
+
 
     public void delete(AlarmModel alarmModel) {
         alarmRepository.delete(alarmModel);

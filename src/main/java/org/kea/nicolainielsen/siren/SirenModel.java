@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.kea.nicolainielsen.alarm.AlarmModel;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,8 @@ public class SirenModel {
 
     @Column(nullable = false)
     private boolean functional;
+
+    private LocalDateTime lastActived;
 
     @OneToMany(mappedBy = "siren", cascade = CascadeType.ALL)
     @JsonIgnore

@@ -47,6 +47,13 @@ public class InitData implements CommandLineRunner {
         fireModel2.setActive(false);
         fireServiceImpl.save(fireModel2);
 
+        FireModel fireModel3 = new FireModel();
+        fireModel3.setName("Copenhagen Fire");
+        fireModel3.setLatitude(55.62631);
+        fireModel3.setLongitude(12.57368);
+        fireModel3.setActive(true);
+        fireServiceImpl.save(fireModel3);
+
         // Insert demo sirens
         List<SirenModel> sirens = new ArrayList<>();
 
@@ -69,7 +76,7 @@ public class InitData implements CommandLineRunner {
             siren.setName("Sirene " + (i + 1));
             siren.setLatitude(sirenCoords[i][0]);
             siren.setLongitude(sirenCoords[i][1]);
-            siren.setActive(true);
+            siren.setActive(false);
             siren.setFunctional(true);
             sirenServiceImpl.save(siren);
             sirens.add(siren);
@@ -81,7 +88,7 @@ public class InitData implements CommandLineRunner {
             alarm.setFire(fireModel1); // Santa Monica Fire
             alarm.setSiren(sirens.get(i));
             alarm.setAlarmStarted(LocalDateTime.now().minusMinutes(30));
-            alarm.setActive(true);
+            alarm.setActive(false);
             alarmServiceImpl.save(alarm);
         }
 
@@ -95,5 +102,14 @@ public class InitData implements CommandLineRunner {
             alarm.setActive(false);
             alarmServiceImpl.save(alarm);
         }
+
+        SirenModel sirenDK = new SirenModel();
+        sirenDK.setName("Sirene DK");
+        sirenDK.setLatitude(55.62631);
+        sirenDK.setLongitude(12.57368);
+        sirenDK.setActive(false);
+        sirenDK.setFunctional(true);
+        sirenServiceImpl.save(sirenDK);
+        sirens.add(sirenDK);
     }
 }

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fire Alarm LA</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<h1>Wild Fire Alarm Management System</h1>
+
+<div class="tabs">
+    <button onclick="loadMain()">Main page</button>
+    <button onclick="loadFires()">Active Fires</button>
+    <button onclick="loadSirens()">All Sirens</button>
+</div>
+
+<div id="content"></div>
+
+<!-- Modal -->
+<div id="modal" class="modal hidden">
+    <div class="modal-content">
+        <span id="closeModal" class="close">&times;</span>
+        <h2>Edit Entity</h2>
+        <form id="modalForm"></form>
+        <button onclick="submitEdit()">Save</button>
+    </div>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>

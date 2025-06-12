@@ -1,5 +1,7 @@
 package org.kea.nicolainielsen.alarm;
 
+import org.kea.nicolainielsen.fire.FireModel;
+import org.kea.nicolainielsen.fire.FireServiceImpl;
 import org.kea.nicolainielsen.siren.SirenModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,8 @@ public class AlarmController {
 
     @Autowired
     AlarmServiceImpl alarmServiceImpl;
+    @Autowired
+    private FireServiceImpl fireServiceImpl;
 
     // Get all alarms ...
 
@@ -49,29 +53,10 @@ public class AlarmController {
     @PostMapping("/start/{fireId}")
     public ResponseEntity<String> startAlarm(@PathVariable int fireId) {
         alarmServiceImpl.createAlarmAndAssignNearbySirens(fireId, 10.0);
-        List<SirenModel> relatedSirens = new ArrayList<>();
-
-        return ResponseEntity.ok("Alarm created with nearby sirens");
+        return ResponseEntity.ok("Alarm started ans nearby sirens has been activated");
     }
 
-    // Update an alarm ...
-
-    @PutMapping("/{id}")
-    public ResponseEntity<AlarmModel> updateAlarm(@PathVariable int id, @RequestBody AlarmModel updatedalarm) {
-        AlarmModel alarm = alarmServiceImpl.findById(id);
-        if (alarm == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        alarm.setAlarmStarted(updatedalarm.getAlarmStarted());
-        alarm.setAlarmEnded(updatedalarm.getAlarmEnded());
-        alarm.setFire(updatedalarm.getFire());
-        alarm.setSiren(updatedalarm.getSiren());
-        alarm.setActive(updatedalarm.isActive());
-        alarmServiceImpl.save(alarm);
-        return new ResponseEntity<>(alarm, HttpStatus.OK);
-    }
-
-    // Stop an alarm ...
+    // Stop an alarm and deactivate related sirens ...
 
     @PutMapping("/stop/{id}")
     public ResponseEntity<AlarmModel> stopAlarm(@PathVariable int id) {
@@ -79,7 +64,6 @@ public class AlarmController {
         if (alarm == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
         alarm.setActive(false);
         alarm.setAlarmEnded(LocalDateTime.now());
         alarmServiceImpl.save(alarm);
@@ -87,18 +71,52 @@ public class AlarmController {
         return new ResponseEntity<>(alarm, HttpStatus.OK);
     }
 
-    // Stop all alarms or a specific fire ...
+    // Stop all sirens related to a specific fire through alarms...
+    @PutMapping("/start/fire/{fireId}")
+    public ResponseEntity<String> startAllAlarmsForFire(@PathVariable int fireId) {
+        FireModel fire = fireServiceImpl.getFireModelbyID(fireId);
+
+        if (fire == null) {
+            return new ResponseEntity<>("Fire not found", HttpStatus.NOT_FOUND);
+        }
+
+        if (fire.isActive()) {
+            return new ResponseEntity<>("Fire is already active", HttpStatus.OK);
+        }
+
+        // Aktiver branden
+        fire.setActive(true);
+        fireServiceImpl.save(fire);
+
+        // Find og opret alarmer for nærliggende sirener
+        alarmServiceImpl.createAlarmAndAssignNearbySirens(fireId, 10.0);
+
+        return new ResponseEntity<>("Alarms started and fire marked active", HttpStatus.OK);
+    }
+
+    // Stop all sirens related to a specific fire through alarms...
 
     @PutMapping("/stop/fire/{fireId}")
-    public ResponseEntity<Void> stopAllAlarmsForFire(@PathVariable int fireId) {
+    public ResponseEntity<String> stopAllAlarmsForFire(@PathVariable int fireId) {
+        FireModel fire = fireServiceImpl.getFireModelbyID(fireId);
         List<AlarmModel> alarms = alarmServiceImpl.findByFireIdAndActiveTrue(fireId);
-        for (AlarmModel alarm : alarms) {
-            alarm.setActive(false);
-            alarm.setAlarmEnded(LocalDateTime.now());
-            alarmServiceImpl.save(alarm);
+
+        if (fire != null && fire.isActive())  {
+            for (AlarmModel alarm : alarms) {
+                alarmServiceImpl.stopAlarmAndUpdateSiren(alarm.getId());
+            }
+            FireModel fireOut = fireServiceImpl.getFireModelbyID(fireId);
+            fireOut.setActive(false);
+            fireServiceImpl.save(fireOut);
+
+            return new ResponseEntity<>("Fire is put out --> Status changed", HttpStatus.OK);
+        } else if (!fire.isActive()){
+            return new ResponseEntity<>("This fire has already been put out ...", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Somethings wrong ...", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 
     // Delete an alarm ...
 
