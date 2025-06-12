@@ -2,6 +2,7 @@ package org.kea.nicolainielsen.fire;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,18 @@ public class FireServiceImpl implements FireService {
     @Override
     public List<FireModel> findAllFires() {
         return fireRepository.findAll();
+    }
+
+    @Override
+    public List<FireModel> findActiveFires() {
+        List<FireModel> allActiveFires = new ArrayList<>();
+
+        for (FireModel fireModel : fireRepository.findAll()) {
+            if (fireModel.isActive()) {
+                allActiveFires.add(fireModel);
+            }
+        }
+        return allActiveFires;
     }
 
     @Override

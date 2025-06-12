@@ -2,7 +2,7 @@ package org.kea.nicolainielsen.alarm;
 
 import org.kea.nicolainielsen.fire.FireModel;
 import org.kea.nicolainielsen.fire.FireServiceImpl;
-import org.kea.nicolainielsen.siren.SirenModel;
+import org.kea.nicolainielsen.siren.SirenServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +20,8 @@ public class AlarmController {
     AlarmServiceImpl alarmServiceImpl;
     @Autowired
     private FireServiceImpl fireServiceImpl;
+    @Autowired
+    private SirenServiceImpl sirenServiceImpl;
 
     // Get all alarms ...
 
@@ -53,7 +55,7 @@ public class AlarmController {
     @PostMapping("/start/{fireId}")
     public ResponseEntity<String> startAlarm(@PathVariable int fireId) {
         alarmServiceImpl.createAlarmAndAssignNearbySirens(fireId, 10.0);
-        return ResponseEntity.ok("Alarm started ans nearby sirens has been activated");
+        return ResponseEntity.ok("Alarm started and nearby sirens has been activated");
     }
 
     // Stop an alarm and deactivate related sirens ...

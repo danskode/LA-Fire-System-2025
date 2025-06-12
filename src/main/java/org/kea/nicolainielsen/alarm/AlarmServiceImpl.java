@@ -74,8 +74,6 @@ public class AlarmServiceImpl implements AlarmService {
                 siren.setLastActived(LocalDateTime.now());
                 sirenServiceImpl.save(siren);
                 System.out.println("Alarm created for siren: " + siren.getName());
-
-//                System.out.println(siren.getName() + " " + siren.isActive() );
             }
         }
     }

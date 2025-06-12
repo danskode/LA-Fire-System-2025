@@ -59,7 +59,7 @@ function createFire() {
 }
 
 function loadMain() {
-    fetch("/api/fires?active=true")
+    fetch("/api/fires/active")
         .then(response => response.json())
         .then(fires => {
             const content = document.getElementById("content");
@@ -106,8 +106,8 @@ function loadMain() {
 }
 
 function startAlarmsForFire(fireId) {
-    fetch(`/api/alarms/start/fire/${fireId}`, {
-        method: 'PUT'
+    fetch(`/api/alarms/start/${fireId}`, {
+        method: 'POST'
     })
         .then(response => {
             if (response.ok) {
@@ -124,7 +124,7 @@ function startAlarmsForFire(fireId) {
 }
 
 function stopAlarmsForFire(fireId) {
-    fetch(`/api/alarms/stop/fire/${fireId}`, {
+    fetch(`/api/alarms/stop/${fireId}`, {
         method: 'PUT'
     })
         .then(response => {
@@ -149,7 +149,8 @@ function loadFires() {
     const content = document.getElementById("content");
 
     // Hent alle aktive fires fra backend
-    fetch("/api/fires?active=true")
+    //fetch("/api/fires?active=true")
+    fetch("/api/fires")
         .then(response => response.json())
         .then(fires => {
             // Opret en HTML-tabel
@@ -178,7 +179,7 @@ function loadFires() {
 
             // Tilføj aktive fires til tabellen
             fires.forEach(fire => {
-                if (fire.active) {
+                // if (fire.active) {
                     let tr = document.createElement("tr");
                     let td1 = document.createElement("td");
                     td1.textContent = fire.id;
@@ -196,7 +197,7 @@ function loadFires() {
                     tr.appendChild(td4);
                     tr.appendChild(td5);
                     tbody.appendChild(tr);
-                }
+                // }
             });
 
             table.appendChild(thead);

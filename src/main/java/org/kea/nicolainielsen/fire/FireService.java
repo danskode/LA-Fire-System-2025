@@ -12,4 +12,5 @@ public interface FireService {
 
     FireModel delete(FireModel fireModel1);
 
+    List<FireModel> findActiveFires();
 }

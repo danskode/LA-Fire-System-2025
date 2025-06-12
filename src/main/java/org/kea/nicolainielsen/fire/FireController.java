@@ -19,7 +19,6 @@ public class FireController {
     }
 
     // Get all fires ever registered ...
-
     @GetMapping("")
     ResponseEntity<List<FireModel>> findAllFires() {
         List<FireModel> fireModels = fireService.findAllFires();
@@ -30,7 +29,6 @@ public class FireController {
     }
 
     // Get a specific fires by its id ...
-
     @GetMapping("/{id}")
     public ResponseEntity<FireModel> getFireById(@PathVariable Integer id){
 
@@ -44,8 +42,15 @@ public class FireController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // Create a new fire ...
+    // Get active fires ...
+    @GetMapping("/active")
+    public ResponseEntity<List<FireModel>> allActiveFires() {
+        List<FireModel> activeFires = fireServiceImpl.findActiveFires();
+        return new ResponseEntity<>(activeFires, HttpStatus.OK);
+    }
 
+
+    // Create a new fire ...
     @PostMapping("")
     public ResponseEntity<FireModel> addFire(@RequestBody FireModel fireModel) {
         FireModel savedFireModel = fireService.save(fireModel);
@@ -54,10 +59,8 @@ public class FireController {
 
 
     // Edit a fire ...
-
     @PutMapping("/{id}")
     public  ResponseEntity<FireModel> updateFire(@PathVariable int id, @RequestBody FireModel updatedFireModel) {
-
         FireModel existingFireModel = fireService.getFireModelbyID(id);
         if (existingFireModel == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -72,7 +75,6 @@ public class FireController {
     }
 
     //Delete a fire by its id ...
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFireById(@PathVariable int id) {
         FireModel deleteMe = fireService.getFireModelbyID(id);

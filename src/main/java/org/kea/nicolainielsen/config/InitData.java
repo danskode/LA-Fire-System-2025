@@ -68,7 +68,8 @@ public class InitData implements CommandLineRunner {
                 {34.0270, -118.5190},
                 {34.0220, -118.5160},
                 {34.0360, -118.5140},
-                {34.0380, -118.5170}
+                {34.0380, -118.5170},
+                {55.62631, 12.57368} // Siren i København
         };
 
         for (int i = 0; i < sirenCoords.length; i++) {
@@ -90,10 +91,13 @@ public class InitData implements CommandLineRunner {
             alarm.setAlarmStarted(LocalDateTime.now().minusMinutes(30));
             alarm.setActive(false);
             alarmServiceImpl.save(alarm);
+            // Tilføj alarmen til sirenens liste af alarms
+            sirens.get(i).getAlarmModels().add(alarm);
+            sirenServiceImpl.save(sirens.get(i));
         }
 
         // historical data ...
-        for (int i = 5; i < 8; i++) {
+        for (int i = 5; i < 10; i++) {
             AlarmModel alarm = new AlarmModel();
             alarm.setFire(fireModel2); // Pacific Palisades Fire
             alarm.setSiren(sirens.get(i));
@@ -101,15 +105,21 @@ public class InitData implements CommandLineRunner {
             alarm.setAlarmEnded(LocalDateTime.now().minusHours(12));
             alarm.setActive(false);
             alarmServiceImpl.save(alarm);
+            // Tilføj alarmen til sirenens liste af alarms
+            sirens.get(i).getAlarmModels().add(alarm);
+            sirenServiceImpl.save(sirens.get(i));
         }
 
-        SirenModel sirenDK = new SirenModel();
-        sirenDK.setName("Sirene DK");
-        sirenDK.setLatitude(55.62631);
-        sirenDK.setLongitude(12.57368);
-        sirenDK.setActive(false);
-        sirenDK.setFunctional(true);
-        sirenServiceImpl.save(sirenDK);
-        sirens.add(sirenDK);
+        // Alarm for København
+        AlarmModel alarmDK = new AlarmModel();
+        alarmDK.setFire(fireModel3); // Copenhagen Fire
+        alarmDK.setSiren(sirens.get(11));
+        alarmDK.setAlarmStarted(LocalDateTime.now().minusMinutes(30));
+        alarmDK.setActive(false);
+        alarmServiceImpl.save(alarmDK);
+        // Tilføj alarmen til sirenens liste af alarms
+        sirens.get(11).getAlarmModels().add(alarmDK);
+        sirenServiceImpl.save(sirens.get(11));
+
     }
 }
