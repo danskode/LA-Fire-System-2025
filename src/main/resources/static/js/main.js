@@ -86,7 +86,7 @@ function loadMain() {
 
             html += `
                     <br>
-                    <h1>New fire 🔥</h1>
+                    <h1>Register new fire 🔥</h1>
                     <div>
                         <form id="fireName">
                           <label for="fireName">Name fire:</label>
@@ -248,57 +248,53 @@ function loadSirens() {
     fetch("/api/sirens")
         .then(response => response.json())
         .then(sirens => {
-            // Opret en HTML-tabel
+            // Opret tabel og elementer
             let table = document.createElement("table");
             let thead = document.createElement("thead");
             let tbody = document.createElement("tbody");
 
-            // Opret tabeloverskrifter
+            // Tabeloverskrifter
             let tr = document.createElement("tr");
-            let th1 = document.createElement("th");
-            th1.textContent = "ID";
-            let th2 = document.createElement("th");
-            th2.textContent = "Navn";
-            let th3 = document.createElement("th");
-            th3.textContent = "Latitude";
-            let th4 = document.createElement("th");
-            th4.textContent = "Longitude";
-            let th5 = document.createElement("th");
-            th5.textContent = "Aktiv";
-            let th6 = document.createElement("th");
-            th6.textContent = "Funktionel";
-            tr.appendChild(th1);
-            tr.appendChild(th2);
-            tr.appendChild(th3);
-            tr.appendChild(th4);
-            tr.appendChild(th5);
-            tr.appendChild(th6);
+            ["ID", "Navn", "Latitude", "Longitude", "Aktiv", "Funktionel"].forEach(header => {
+                const th = document.createElement("th");
+                th.textContent = header;
+                tr.appendChild(th);
+            });
             thead.appendChild(tr);
 
-            // Tilføj sirener til tabellen
+            // Rækker med sirener
             sirens.forEach(siren => {
                 let tr = document.createElement("tr");
-                let td1 = document.createElement("td");
-                td1.textContent = siren.id;
-                let td2 = document.createElement("td");
-                td2.textContent = siren.name;
-                let td3 = document.createElement("td");
-                td3.textContent = siren.latitude;
-                let td4 = document.createElement("td");
-                td4.textContent = siren.longitude;
-                let td5 = document.createElement("td");
-                td5.textContent = siren.active;
-                let td6 = document.createElement("td");
-                td6.textContent = siren.functional;
-                tr.appendChild(td1);
-                tr.appendChild(td2);
-                tr.appendChild(td3);
-                tr.appendChild(td4);
-                tr.appendChild(td5);
-                tr.appendChild(td6);
+                tr.innerHTML = `
+                    <td>${siren.id}</td>
+                    <td>${siren.name}</td>
+                    <td>${siren.latitude}</td>
+                    <td>${siren.longitude}</td>
+                    <td>${siren.active}</td>
+                    <td>${siren.functional}</td>
+                `;
                 tbody.appendChild(tr);
             });
 
+            // Formular-række i bunden
+            const formRow = document.createElement("tr");
+            formRow.innerHTML = `
+                <td>Ny</td>
+                <td><input type="text" id="newSirenName" placeholder="Navn"></td>
+                <td><input type="number" step="any" id="newSirenLat" placeholder="Latitude"></td>
+                <td><input type="number" step="any" id="newSirenLng" placeholder="Longitude"></td>
+                <td>-</td>
+                <td>
+                    <select id="newSirenFunctional">
+                        <option value="true">Ja</option>
+                        <option value="false">Nej</option>
+                    </select>
+                    <button onclick="createSiren()">➕</button>
+                </td>
+            `;
+            tbody.appendChild(formRow);
+
+            // Sæt tabel og content
             table.appendChild(thead);
             table.appendChild(tbody);
             content.innerHTML = "";
@@ -308,6 +304,48 @@ function loadSirens() {
             console.error("Error retrieving sirens:", error);
         });
 }
+
+function createSiren() {
+    const name = document.getElementById("newSirenName").value.trim();
+    const lat = parseFloat(document.getElementById("newSirenLat").value.replace(",", "."));
+    const lng = parseFloat(document.getElementById("newSirenLng").value.replace(",", "."));
+    const functional = document.getElementById("newSirenFunctional").value === "true";
+
+    if (!name || isNaN(lat) || isNaN(lng)) {
+        alert("Udfyld navn, latitude og longitude.");
+        return;
+    }
+
+    const newSiren = {
+        name: name,
+        latitude: lat,
+        longitude: lng,
+        functional: functional,
+        active: false // ny siren er inaktiv til at starte med
+    };
+
+    fetch("/api/sirens", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newSiren)
+    })
+        .then(response => {
+            if (response.ok) {
+                alert("Siren tilføjet!");
+                loadSirens(); // genindlæs for at vise den nye
+            } else {
+                alert("Kunne ikke tilføje siren.");
+            }
+        })
+        .catch(error => {
+            console.error("Fejl:", error);
+            alert("Kunne ikke tilføje siren.");
+        });
+}
+
+
 
 function startAlarm(){
         console.log("Starting sirens");
