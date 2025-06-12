@@ -3,13 +3,13 @@ function loadMain() {
     content.innerHTML = `
     <H1>Main Page</H1>
     <div>
-      <label for="fireName">Navn på ny brand:</label>
-      <input type="text" id="fireName" placeholder="Indtast navn">
+      <label for="fireName">Name fire:</label>
+      <input type="text" id="fireName" placeholder="Name fire">
       <label for="latitude">Latitude:</label>
-      <input type="number" id="latitude" placeholder="Indtast latitude">
+      <input type="number" id="latitude" placeholder="Add latitude">
       <label for="longitude">Longitude:</label>
-      <input type="number" id="longitude" placeholder="Indtast longitude">
-      <button onclick="createFire()">Opret ny brand</button>
+      <input type="number" id="longitude" placeholder="Add longitude">
+      <button onclick="createFire()">Save and activate</button>
     </div>
     <button onclick="startAlarm()">Start alarm!</button>
   `;
@@ -41,20 +41,20 @@ function createFire() {
         })
             .then(response => {
                 if (response.ok) {
-                    alert("Ny brand oprettet!");
+                    alert("New fire added successfully!");
                     fireNameInput.value = "";
                     latitudeInput.value = "";
                     longitudeInput.value = "";
                 } else {
-                    alert("Fejl ved oprettelse af ny brand.");
+                    alert("Error adding new fire.");
                 }
             })
             .catch(error => {
-                console.error("Fejl ved oprettelse af ny brand:", error);
-                alert("Fejl ved oprettelse af ny brand.");
+                console.error("Error adding new fire:", error);
+                alert("Error adding new fire.");
             });
     } else {
-        alert("Indtast venligst et navn, latitude og longitude for den nye brand.");
+        alert("You need a name, latitude og longitude to add a new fire.");
     }
 }
 
@@ -65,7 +65,7 @@ function loadMain() {
             const content = document.getElementById("content");
 
             if (fires.length === 0) {
-                content.innerHTML = "<p>Ingen aktive brande.</p>";
+                content.innerHTML = "<p>No active fires.</p>";
                 return;
             }
 
@@ -90,8 +90,8 @@ function loadMain() {
                         <td>${fire.latitude}</td>
                         <td>${fire.longitude}</td>
                         <td>
-                            <button onclick="startAlarmsForFire(${fire.id})">Start alarmer</button>
-                            <button onclick="stopAlarmsForFire(${fire.id})">Stop alarmer</button>
+                            <button onclick="startAlarmsForFire(${fire.id})">Start sirens</button>
+                            <button onclick="stopAlarmsForFire(${fire.id})">Stop sirens</button>
                         </td>
                     </tr>`;
             });
@@ -100,8 +100,8 @@ function loadMain() {
             content.innerHTML = html;
         })
         .catch(error => {
-            console.error("Fejl ved hentning af aktive brande:", error);
-            document.getElementById("content").innerHTML = "<p>Fejl ved hentning af brande.</p>";
+            console.error("Error retrieving fires:", error);
+            document.getElementById("content").innerHTML = "<p>Error retrieving fires.</p>";
         });
 }
 
@@ -111,33 +111,33 @@ function startAlarmsForFire(fireId) {
     })
         .then(response => {
             if (response.ok) {
-                alert(`Alarmer startet for brand #${fireId}`);
+                alert(`Sirens started for fire #${fireId}`);
                 loadMain();
             } else {
-                alert('Kunne ikke starte alarmer.');
+                alert('Could not start sirens.');
             }
         })
         .catch(error => {
-            console.error('Fejl ved start af alarmer:', error);
-            alert('Kunne ikke starte alarmer.');
+            console.error('Could not start sirens:', error);
+            alert('Could not start sirens.');
         });
 }
 
 function stopAlarmsForFire(fireId) {
-    fetch(`/api/alarms/stop/${fireId}`, {
+    fetch(`/api/alarms/stop/fire/${fireId}`, {
         method: 'PUT'
     })
         .then(response => {
             if (response.ok) {
-                alert(`Alarmer stoppet for brand #${fireId}`);
+                alert(`Sirens stopped for fire #${fireId}`);
                 loadMain();
             } else {
-                alert('Kunne ikke stoppe alarmer.');
+                alert('Could not stop sirens.');
             }
         })
         .catch(error => {
-            console.error('Fejl ved stop af alarmer:', error);
-            alert('Kunne ikke stoppe alarmer.');
+            console.error('Error stopping sirens:', error);
+            alert('Could not stop sirens ...');
         });
 }
 
@@ -280,7 +280,7 @@ function loadSirens() {
 }
 
 function startAlarm(){
-        console.log("Starting Alarm");
+        console.log("Starting sirens");
 }
 
 window.onload = loadMain;
