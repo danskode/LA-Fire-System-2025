@@ -1,28 +1,11 @@
-function loadMain() {
-    const content = document.getElementById("content");
-    content.innerHTML = `
-    <H1>Main Page</H1>
-    <div>
-      <label for="fireName">Name fire:</label>
-      <input type="text" id="fireName" placeholder="Name fire">
-      <label for="latitude">Latitude:</label>
-      <input type="number" id="latitude" placeholder="Add latitude">
-      <label for="longitude">Longitude:</label>
-      <input type="number" id="longitude" placeholder="Add longitude">
-      <button onclick="createFire()">Save and activate</button>
-    </div>
-    <button onclick="startAlarm()">Start alarm!</button>
-  `;
-}
-
 function createFire() {
     const fireNameInput = document.getElementById("fireName");
     const latitudeInput = document.getElementById("latitude");
     const longitudeInput = document.getElementById("longitude");
 
     const fireName = fireNameInput.value.trim();
-    const latitude = parseFloat(latitudeInput.value);
-    const longitude = parseFloat(longitudeInput.value);
+    const latitude = parseFloat(latitudeInput.value.replace(",", "."));
+    const longitude = parseFloat(longitudeInput.value.replace(",", "."));
 
     if (fireName && !isNaN(latitude) && !isNaN(longitude)) {
         const newFire = {
@@ -76,24 +59,24 @@ function loadMain() {
                       <label for="fireName">Name fire:</label>
                       <input type="text" id="fireName" placeholder="Name fire">
                       <label for="latitude">Latitude:</label>
-                      <input type="number" id="latitude" placeholder="Add latitude">
+                      <input type="number" step="any" id="latitude" placeholder="Add latitude">
                       <label for="longitude">Longitude:</label>
-                      <input type="number" id="longitude" placeholder="Add longitude">
+                      <input type="number" step="any" id="longitude" placeholder="Add longitude">
                       <button onclick="createFire()">Save and activate</button>
                   </form>
                 </div>
                
 
 
-                <h2>Aktive Brande</h2>
+                <h2>Aktive Fires</h2>
                                     <table>
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
-                                                <th>Navn</th>
+                                                <th>Name</th>
                                                 <th>Latitude</th>
                                                 <th>Longitude</th>
-                                                <th>Handlinger</th>
+                                                <th>Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>`;
@@ -180,11 +163,6 @@ function fireIsOut(fireId) {
             console.error('Fejl ved opdatering af brand:', error);
         });
 }
-
-
-
-
-
 
 function loadFires() {
     const content = document.getElementById("content");

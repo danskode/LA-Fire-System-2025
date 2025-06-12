@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -32,7 +29,6 @@ public class AlarmController {
     }
 
     // Find one alarm by id ...
-
     @GetMapping("/{id}")
     public ResponseEntity<AlarmModel> getAlarmById(@PathVariable int id) {
         AlarmModel alarm = alarmServiceImpl.findById(id);
@@ -58,65 +54,25 @@ public class AlarmController {
         return ResponseEntity.ok("Alarm started and nearby sirens has been activated");
     }
 
-    //
-
-
-
-
-
-    // Stop an alarm and deactivate related sirens ...
-//    @PutMapping("/stop/{id}")
-//    public ResponseEntity<AlarmModel> stopAlarm(@PathVariable int id) {
-//        AlarmModel alarm = alarmServiceImpl.findById(id);
-//        if (alarm == null) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//        alarm.setActive(false);
-//        alarm.setAlarmEnded(LocalDateTime.now());
-//        alarmServiceImpl.save(alarm);
-//
-//        return new ResponseEntity<>(alarm, HttpStatus.OK);
-//    }
-
-    // Stop all sirens related to a specific fire through alarms...
-//    @PutMapping("/start/fire/{fireId}")
-//    public ResponseEntity<String> startAllAlarmsForFire(@PathVariable int fireId) {
-//        FireModel fire = fireServiceImpl.getFireModelbyID(fireId);
-//
-//        if (fire == null) {
-//            return new ResponseEntity<>("Fire not found", HttpStatus.NOT_FOUND);
-//        }
-//
-//        if (fire.isActive()) {
-//            return new ResponseEntity<>("Fire is already active", HttpStatus.OK);
-//        }
-//
-//        // Aktiver branden
-//        fire.setActive(true);
-//        fireServiceImpl.save(fire);
-//
-//        // Find og opret alarmer for nærliggende sirener
-//        alarmServiceImpl.createAlarmAndAssignNearbySirens(fireId, 10.0);
-//
-//        return new ResponseEntity<>("Alarms started and fire marked active", HttpStatus.OK);
-//    }
-
     // Stop all sirens related to a specific fire through alarms...
 
     @PutMapping("/stop/fire/{fireId}")
     public ResponseEntity<String> stopAllAlarmsForFire(@PathVariable int fireId) {
         FireModel fire = fireServiceImpl.getFireModelbyID(fireId);
-        List<AlarmModel> alarms = alarmServiceImpl.findByFireIdAndActiveTrue(fireId);
 
-        if (fire != null && fire.isActive())  {
+        List<AlarmModel> alarms = alarmServiceImpl.findAll();
+
+        if (alarms != null && fire.isActive() ) {
             for (AlarmModel alarm : alarms) {
-                alarmServiceImpl.stopAlarmAndUpdateSiren(alarm.getId());
+                if (alarm.getFire().equals(fire)) {
+                    alarm.setActive(false);
+                    alarm.getSiren().setActive(false);
+                    alarmServiceImpl.save(alarm);
+                }
             }
-            FireModel fireOut = fireServiceImpl.getFireModelbyID(fireId);
-            fireOut.setActive(false);
-            fireServiceImpl.save(fireOut);
 
             return new ResponseEntity<>("Fire is put out --> Status changed", HttpStatus.OK);
+
         } else if (!fire.isActive()){
             return new ResponseEntity<>("This fire has already been put out ...", HttpStatus.OK);
         } else {
@@ -126,7 +82,6 @@ public class AlarmController {
 
 
     // Delete an alarm ...
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAlarm(@PathVariable int id) {
         AlarmModel deleteMe = alarmServiceImpl.findById(id);

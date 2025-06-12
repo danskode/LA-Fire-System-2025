@@ -1,5 +1,8 @@
 package org.kea.nicolainielsen.fire;
 
+import org.kea.nicolainielsen.alarm.AlarmModel;
+import org.kea.nicolainielsen.alarm.AlarmServiceImpl;
+import org.kea.nicolainielsen.siren.SirenServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,17 +14,19 @@ import java.util.List;
 public class FireController {
 
     private final FireServiceImpl fireServiceImpl;
-    private FireServiceImpl fireService;
+    private final AlarmServiceImpl alarmServiceImpl;
+    private final SirenServiceImpl sirenServiceImpl;
 
-    public FireController(FireServiceImpl fireService, FireServiceImpl fireServiceImpl) {
-        this.fireService = fireService;
+    public FireController(FireServiceImpl fireServiceImpl, AlarmServiceImpl alarmServiceImpl, SirenServiceImpl sirenServiceImpl) {
         this.fireServiceImpl = fireServiceImpl;
+        this.alarmServiceImpl = alarmServiceImpl;
+        this.sirenServiceImpl = sirenServiceImpl;
     }
 
     // Get all fires ever registered ...
     @GetMapping("")
     ResponseEntity<List<FireModel>> findAllFires() {
-        List<FireModel> fireModels = fireService.findAllFires();
+        List<FireModel> fireModels = fireServiceImpl.findAllFires();
         if (fireModels.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -32,7 +37,7 @@ public class FireController {
     @GetMapping("/{id}")
     public ResponseEntity<FireModel> getFireById(@PathVariable Integer id){
 
-        FireModel returned = fireService.getFireModelbyID(id);
+        FireModel returned = fireServiceImpl.getFireModelbyID(id);
         if (returned == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -53,7 +58,7 @@ public class FireController {
     // Create a new fire ...
     @PostMapping("")
     public ResponseEntity<FireModel> addFire(@RequestBody FireModel fireModel) {
-        FireModel savedFireModel = fireService.save(fireModel);
+        FireModel savedFireModel = fireServiceImpl.save(fireModel);
         return new ResponseEntity<>(savedFireModel, HttpStatus.CREATED);
     }
 
@@ -61,7 +66,7 @@ public class FireController {
     // Edit a fire ...
     @PutMapping("/{id}")
     public  ResponseEntity<FireModel> updateFire(@PathVariable int id, @RequestBody FireModel updatedFireModel) {
-        FireModel existingFireModel = fireService.getFireModelbyID(id);
+        FireModel existingFireModel = fireServiceImpl.getFireModelbyID(id);
         if (existingFireModel == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -70,27 +75,36 @@ public class FireController {
         existingFireModel.setLatitude(updatedFireModel.getLatitude());
         existingFireModel.setActive(updatedFireModel.isActive());
 
-        FireModel savedFireModel = fireService.save(existingFireModel);
+        FireModel savedFireModel = fireServiceImpl.save(existingFireModel);
         return new ResponseEntity<>(savedFireModel, HttpStatus.OK);
     }
 
     //Deactivate fire ...
     @PutMapping("/deactivate/{id}")
     public  ResponseEntity<FireModel> deactivateFire(@PathVariable int id, @RequestBody FireModel updatedFireModel) {
-        FireModel existingFireModel = fireService.getFireModelbyID(id);
+        FireModel existingFireModel = fireServiceImpl.getFireModelbyID(id);
         if (existingFireModel == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         existingFireModel.setActive(updatedFireModel.isActive());
 
-        FireModel savedFireModel = fireService.save(existingFireModel);
+        List<AlarmModel> allAlarms = alarmServiceImpl.findAll();
+        for (AlarmModel alarmModel : allAlarms) {
+            if (alarmModel.getFire().equals(existingFireModel)) {
+                alarmModel.setActive(false);
+                alarmModel.getSiren().setActive(false);
+                alarmServiceImpl.save(alarmModel);
+            }
+        }
+
+        FireModel savedFireModel = fireServiceImpl.save(existingFireModel);
         return new ResponseEntity<>(savedFireModel, HttpStatus.OK);
     }
 
     //Delete a fire by its id ...
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFireById(@PathVariable int id) {
-        FireModel deleteMe = fireService.getFireModelbyID(id);
+        FireModel deleteMe = fireServiceImpl.getFireModelbyID(id);
         fireServiceImpl.delete(deleteMe);
         return new ResponseEntity<>(HttpStatus.OK);
     }
