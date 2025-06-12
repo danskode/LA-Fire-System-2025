@@ -16,5 +16,4 @@ public class AlarmModel {
     private int id;
     int sirenID;
 //    @ManyToMany(mappedBy = "id")
-//    int fireID;
 }
