@@ -69,18 +69,34 @@ function loadMain() {
                 return;
             }
 
-            let html = `<h2>Aktive Brande</h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Navn</th>
-                                    <th>Latitude</th>
-                                    <th>Longitude</th>
-                                    <th>Handlinger</th>
-                                </tr>
-                            </thead>
-                            <tbody>`;
+            let html = `
+                <H1>Main Page</H1>
+                <div>
+                    <form id="fireName">
+                      <label for="fireName">Name fire:</label>
+                      <input type="text" id="fireName" placeholder="Name fire">
+                      <label for="latitude">Latitude:</label>
+                      <input type="number" id="latitude" placeholder="Add latitude">
+                      <label for="longitude">Longitude:</label>
+                      <input type="number" id="longitude" placeholder="Add longitude">
+                      <button onclick="createFire()">Save and activate</button>
+                  </form>
+                </div>
+               
+
+
+                <h2>Aktive Brande</h2>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Navn</th>
+                                                <th>Latitude</th>
+                                                <th>Longitude</th>
+                                                <th>Handlinger</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>`;
 
             fires.forEach(fire => {
                 html += `
@@ -92,6 +108,7 @@ function loadMain() {
                         <td>
                             <button onclick="startAlarmsForFire(${fire.id})">Start sirens</button>
                             <button onclick="stopAlarmsForFire(${fire.id})">Stop sirens</button>
+                            <button onclick="fireIsOut(${fire.id})">Deactivate fire</button>
                         </td>
                     </tr>`;
             });
@@ -140,6 +157,30 @@ function stopAlarmsForFire(fireId) {
             alert('Could not stop sirens ...');
         });
 }
+
+function fireIsOut(fireId) {
+    fetch(`/api/fires/deactivate/${fireId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            active: false
+        })
+    })
+        .then(response => {
+            if (response.ok) {
+                alert('Fire is out and archived as so!');
+                loadMain();
+            } else {
+                alert('Could not deactivate fire');
+            }
+        })
+        .catch(error => {
+            console.error('Fejl ved opdatering af brand:', error);
+        });
+}
+
 
 
 

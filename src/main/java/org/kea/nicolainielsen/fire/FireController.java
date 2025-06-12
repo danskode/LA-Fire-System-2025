@@ -74,6 +74,19 @@ public class FireController {
         return new ResponseEntity<>(savedFireModel, HttpStatus.OK);
     }
 
+    //Deactivate fire ...
+    @PutMapping("/deactivate/{id}")
+    public  ResponseEntity<FireModel> deactivateFire(@PathVariable int id, @RequestBody FireModel updatedFireModel) {
+        FireModel existingFireModel = fireService.getFireModelbyID(id);
+        if (existingFireModel == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        existingFireModel.setActive(updatedFireModel.isActive());
+
+        FireModel savedFireModel = fireService.save(existingFireModel);
+        return new ResponseEntity<>(savedFireModel, HttpStatus.OK);
+    }
+
     //Delete a fire by its id ...
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFireById(@PathVariable int id) {
