@@ -50,8 +50,8 @@ public class AlarmController {
         }
         alarm.setAlarmStarted(updatedalarm.getAlarmStarted());
         alarm.setAlarmEnded(updatedalarm.getAlarmEnded());
-        alarm.setFireID(updatedalarm.getFireID());
-        alarm.setSirenID(updatedalarm.getSirenID());
+        alarm.setFire(updatedalarm.getFire());
+        alarm.setSiren(updatedalarm.getSiren());
         alarm.setActive(updatedalarm.isActive());
         alarmServiceImpl.save(alarm);
         return new ResponseEntity<>(alarm, HttpStatus.OK);

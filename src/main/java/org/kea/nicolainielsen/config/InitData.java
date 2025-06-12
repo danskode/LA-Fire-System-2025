@@ -12,6 +12,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class InitData implements CommandLineRunner {
@@ -29,44 +31,72 @@ public class InitData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        //Insert demo fires ...
+
+        // Insert demo fires
         FireModel fireModel1 = new FireModel();
-        // fireModel1.setId(1);
-        fireModel1.setName("Fire 1");
-        fireModel1.setLatitude(100.0);
-        fireModel1.setLongitude(100.0);
-        fireModel1.setActive(false);
-        fireModel1.setStartTime(LocalDateTime.now());
+        fireModel1.setName("Santa Monica Fire");
+        fireModel1.setLatitude(34.0100);
+        fireModel1.setLongitude(-118.4960);
+        fireModel1.setActive(true);
+        fireModel1.setStartTime(LocalDateTime.now().minusHours(1));
         fireServiceImpl.save(fireModel1);
 
         FireModel fireModel2 = new FireModel();
-        // fireModel2.setId(2);
-        fireModel2.setName("Fire 2");
-        fireModel2.setLatitude(200.0);
-        fireModel2.setLongitude(200.0);
-        fireModel2.setActive(true);
-        fireModel2.setStartTime(LocalDateTime.now().minusDays(12));
-        fireModel2.setEndTime(LocalDateTime.now());
+        fireModel2.setName("Pacific Palisades Fire");
+        fireModel2.setLatitude(34.0356);
+        fireModel2.setLongitude(-118.5153);
+        fireModel2.setActive(false);
+        fireModel2.setStartTime(LocalDateTime.now().minusDays(1));
+        fireModel2.setEndTime(LocalDateTime.now().minusHours(12));
         fireServiceImpl.save(fireModel2);
 
-        // Insert demo sirenes ...
-        SirenModel sirenModel1 = new SirenModel();
-        sirenModel1.setName("Sirene 1");
-        sirenModel1.setLatitude(100.0);
-        sirenModel1.setLongitude(100.0);
-        sirenModel1.setActive(false);
-        sirenModel1.setFunctional(false);
-        sirenServiceImpl.save(sirenModel1);
+        // Insert demo sirens
+        List<SirenModel> sirens = new ArrayList<>();
 
-        // Insert demo alarm ...
-        AlarmModel alarmModel1 = new AlarmModel();
-        alarmModel1.setSirenID(1);
-        alarmModel1.setFireID(1);
-        alarmModel1.setAlarmStarted(LocalDateTime.now());
-        alarmModel1.setAlarmEnded(LocalDateTime.now());
-        alarmModel1.setActive(true);
-        alarmServiceImpl.save(alarmModel1);
+        double[][] sirenCoords = {
+                {34.0090, -118.4950},
+                {34.0120, -118.4920},
+                {34.0110, -118.4980},
+                {34.0300, -118.5200},
+                {34.0315, -118.5100},
+                {34.0330, -118.5080},
+                {34.0280, -118.5070},
+                {34.0270, -118.5190},
+                {34.0220, -118.5160},
+                {34.0360, -118.5140},
+                {34.0380, -118.5170}
+        };
 
+        for (int i = 0; i < sirenCoords.length; i++) {
+            SirenModel siren = new SirenModel();
+            siren.setName("Sirene " + (i + 1));
+            siren.setLatitude(sirenCoords[i][0]);
+            siren.setLongitude(sirenCoords[i][1]);
+            siren.setActive(true);
+            siren.setFunctional(true);
+            sirenServiceImpl.save(siren);
+            sirens.add(siren);
+        }
+
+        // Insert demo alarms close to fires ...
+        for (int i = 0; i < 5; i++) {
+            AlarmModel alarm = new AlarmModel();
+            alarm.setFire(fireModel1); // Santa Monica Fire
+            alarm.setSiren(sirens.get(i));
+            alarm.setAlarmStarted(LocalDateTime.now().minusMinutes(30));
+            alarm.setActive(true);
+            alarmServiceImpl.save(alarm);
+        }
+
+        // historical data ...
+        for (int i = 5; i < 8; i++) {
+            AlarmModel alarm = new AlarmModel();
+            alarm.setFire(fireModel2); // Pacific Palisades Fire
+            alarm.setSiren(sirens.get(i));
+            alarm.setAlarmStarted(LocalDateTime.now().minusDays(1));
+            alarm.setAlarmEnded(LocalDateTime.now().minusHours(12));
+            alarm.setActive(false);
+            alarmServiceImpl.save(alarm);
+        }
     }
-
 }
