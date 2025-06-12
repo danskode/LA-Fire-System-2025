@@ -1,7 +1,5 @@
 package org.kea.nicolainielsen.siren;
 
-
-import org.kea.nicolainielsen.fire.FireModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +51,6 @@ public class SirenController {
         SirenModel savedSiren = sirenServiceImpl.save(sirenModel);
         return new ResponseEntity<>(savedSiren, HttpStatus.CREATED);
     }
-
 
     // Edit a siren ...
 

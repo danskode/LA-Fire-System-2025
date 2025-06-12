@@ -45,6 +45,7 @@ public class FireController {
     }
 
     // Create a new fire ...
+
     @PostMapping("")
     public ResponseEntity<FireModel> addFire(@RequestBody FireModel fireModel) {
         FireModel savedFireModel = fireService.save(fireModel);
@@ -53,6 +54,7 @@ public class FireController {
 
 
     // Edit a fire ...
+
     @PutMapping("/{id}")
     public  ResponseEntity<FireModel> updateFire(@PathVariable int id, @RequestBody FireModel updatedFireModel) {
 
@@ -72,6 +74,7 @@ public class FireController {
     }
 
     //Delete a fire by its id ...
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFireById(@PathVariable int id) {
         FireModel deleteMe = fireService.getFireModelbyID(id);

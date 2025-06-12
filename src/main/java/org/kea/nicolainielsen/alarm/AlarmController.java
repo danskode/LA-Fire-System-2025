@@ -14,6 +14,7 @@ public class AlarmController {
     AlarmServiceImpl alarmServiceImpl;
 
     // Get all alarms ...
+
     @GetMapping("")
     public ResponseEntity<List<AlarmModel>> getAll() {
         List<AlarmModel> allAlarms = alarmServiceImpl.findAll();
@@ -21,6 +22,7 @@ public class AlarmController {
     }
 
     // Find one alarm by id ...
+
     @GetMapping("/{id}")
     public ResponseEntity<AlarmModel> getAlarmById(@PathVariable int id) {
         AlarmModel alarm = alarmServiceImpl.findById(id);
@@ -31,6 +33,7 @@ public class AlarmController {
     }
 
     // Add new alarm ...
+
     @PostMapping("")
     public ResponseEntity<AlarmModel> saveAlarm(@RequestBody AlarmModel alarm) {
         alarmServiceImpl.save(alarm);
@@ -38,6 +41,7 @@ public class AlarmController {
     }
 
     // Update an alarm ...
+
     @PutMapping("/{id}")
     public ResponseEntity<AlarmModel> updateAlarm(@PathVariable int id, @RequestBody AlarmModel updatedalarm) {
         AlarmModel alarm = alarmServiceImpl.findById(id);
@@ -54,13 +58,14 @@ public class AlarmController {
     }
 
     // Delete an alarm ...
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAlarm(@PathVariable int id) {
-        AlarmModel alarm = alarmServiceImpl.findById(id);
-        if (alarm == null) {
+        AlarmModel deleteMe = alarmServiceImpl.findById(id);
+        if (deleteMe == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        alarmServiceImpl.delete(alarm);
+        alarmServiceImpl.delete(deleteMe);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
