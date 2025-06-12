@@ -1,8 +1,6 @@
 package org.kea.nicolainielsen.alarm;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +11,7 @@ import lombok.Setter;
 public class AlarmModel {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     int sirenID;
-//    @ManyToMany(mappedBy = "id")
 }

@@ -54,6 +54,8 @@ public class InitData implements CommandLineRunner {
         sirenModel1.setFunctional(false);
         sirenServiceImpl.save(sirenModel1);
 
+        // Insert demo alarm ...
+
     }
 
 }

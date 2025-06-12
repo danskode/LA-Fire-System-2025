@@ -32,12 +32,14 @@ public class FireServiceImpl implements FireService {
     }
 
     @Override
-    public void save(FireModel fireModel1) {
+    public FireModel save(FireModel fireModel1) {
         fireRepository.save(fireModel1);
+        return fireModel1;
     }
 
     @Override
-    public void delete(FireModel fireModel1) {
+    public FireModel delete(FireModel fireModel1) {
         fireRepository.delete(fireModel1);
+        return fireModel1;
     }
 }

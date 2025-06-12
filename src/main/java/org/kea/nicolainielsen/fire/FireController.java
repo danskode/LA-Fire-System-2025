@@ -45,24 +45,37 @@ public class FireController {
     }
 
     // Create a new fire ...
-
+    @PostMapping("")
+    public ResponseEntity<FireModel> addFire(@RequestBody FireModel fireModel) {
+        FireModel savedFireModel = fireService.save(fireModel);
+        return new ResponseEntity<>(savedFireModel, HttpStatus.CREATED);
+    }
 
 
     // Edit a fire ...
+    @PutMapping("/{id}")
+    public  ResponseEntity<FireModel> updateFire(@PathVariable int id, @RequestBody FireModel updatedFireModel) {
 
+        FireModel existingFireModel = fireService.getFireModelbyID(id);
+        if (existingFireModel == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        existingFireModel.setName(updatedFireModel.getName());
+        existingFireModel.setStartTime(updatedFireModel.getStartTime());
+        existingFireModel.setEndTime(updatedFireModel.getEndTime());
+        existingFireModel.setLongitude(updatedFireModel.getLongitude());
+        existingFireModel.setLatitude(updatedFireModel.getLatitude());
+        existingFireModel.setActive(updatedFireModel.isActive());
 
-
-
+        FireModel savedFireModel = fireService.save(existingFireModel);
+        return new ResponseEntity<>(savedFireModel, HttpStatus.OK);
+    }
 
     //Delete a fire by its id ...
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<FireModel> deleteFireById(@PathVariable Integer id) {
-        if (id == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<Void> deleteFireById(@PathVariable int id) {
         FireModel deleteMe = fireService.getFireModelbyID(id);
         fireServiceImpl.delete(deleteMe);
-        return new ResponseEntity<>(deleteMe, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

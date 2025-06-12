@@ -8,8 +8,8 @@ public interface FireService {
 
     FireModel getFireModelbyID(Integer id);
 
-    void save(FireModel fireModel1);
+    FireModel save(FireModel fireModel1);
 
-    void delete(FireModel fireModel1);
+    FireModel delete(FireModel fireModel1);
 
 }

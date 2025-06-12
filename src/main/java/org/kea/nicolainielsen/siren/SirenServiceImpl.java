@@ -1,5 +1,6 @@
 package org.kea.nicolainielsen.siren;
 
+import org.springframework.http.server.DelegatingServerHttpResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,12 +25,20 @@ public class SirenServiceImpl implements SirenService {
     }
 
     @Override
-    public void save(SirenModel sirenModel) {
+    public SirenModel save(SirenModel sirenModel) {
         sirenRepository.save(sirenModel);
+        return sirenModel;
     }
 
     @Override
     public List<SirenModel> findAllSirens(){
         return sirenRepository.findAll();
+    }
+
+    @Override
+    public void delete(SirenModel deleteMe) {
+        if (deleteMe != null){
+            sirenRepository.delete(deleteMe);
+        }
     }
 }

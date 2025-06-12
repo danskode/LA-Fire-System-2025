@@ -14,9 +14,10 @@ public interface SirenService {
 
     // Get all sirens within 10K from a fire by fire's id ...
 
-
-
     // Save a siren ...
-    void save(SirenModel sirenModel);
+    SirenModel save(SirenModel sirenModel);
+
+    // Delete siren ...
+    void delete(SirenModel siren);
 
 }
