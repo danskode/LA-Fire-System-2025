@@ -20,8 +20,14 @@ public class AlarmServiceImpl implements AlarmService {
 
     @Override
     public List<AlarmModel> findAll() {
-        List<AlarmModel> allAlarms = alarmRepository.findAll();
+        return alarmRepository.findAll();
+    }
 
-        return allAlarms;
+    public void save(AlarmModel alarmModel1) {
+        alarmRepository.save(alarmModel1);
+    }
+
+    public void delete(AlarmModel alarmModel) {
+        alarmRepository.delete(alarmModel);
     }
 }

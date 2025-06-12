@@ -6,7 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@RestController("/api/alarms")
+@RestController
+@RequestMapping("/api/alarms")
 public class AlarmController {
 
     @Autowired
@@ -20,12 +21,46 @@ public class AlarmController {
     }
 
     // Find one alarm by id ...
+    @GetMapping("/{id}")
+    public ResponseEntity<AlarmModel> getAlarmById(@PathVariable int id) {
+        AlarmModel alarm = alarmServiceImpl.findById(id);
+        if (alarm == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(alarm, HttpStatus.OK);
+    }
 
     // Add new alarm ...
+    @PostMapping("")
+    public ResponseEntity<AlarmModel> saveAlarm(@RequestBody AlarmModel alarm) {
+        alarmServiceImpl.save(alarm);
+        return new ResponseEntity<>(alarm, HttpStatus.OK);
+    }
 
     // Update an alarm ...
+    @PutMapping("/{id}")
+    public ResponseEntity<AlarmModel> updateAlarm(@PathVariable int id, @RequestBody AlarmModel updatedalarm) {
+        AlarmModel alarm = alarmServiceImpl.findById(id);
+        if (alarm == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        alarm.setAlarmStarted(updatedalarm.getAlarmStarted());
+        alarm.setAlarmEnded(updatedalarm.getAlarmEnded());
+        alarm.setFireID(updatedalarm.getFireID());
+        alarm.setSirenID(updatedalarm.getSirenID());
+        alarm.setActive(updatedalarm.isActive());
+        alarmServiceImpl.save(alarm);
+        return new ResponseEntity<>(alarm, HttpStatus.OK);
+    }
 
-
-
-
+    // Delete an alarm ...
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAlarm(@PathVariable int id) {
+        AlarmModel alarm = alarmServiceImpl.findById(id);
+        if (alarm == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        alarmServiceImpl.delete(alarm);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

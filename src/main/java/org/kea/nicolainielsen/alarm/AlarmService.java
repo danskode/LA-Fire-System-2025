@@ -1,13 +1,15 @@
 package org.kea.nicolainielsen.alarm;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AlarmService {
 
-    AlarmModel findById(int id);
+    public void save(AlarmModel alarmModel1);
 
-    List<AlarmModel> findAll();
+    public AlarmModel findById(int id);
 
+    public List<AlarmModel> findAll();
+
+    void delete(AlarmModel alarm);
 
 }

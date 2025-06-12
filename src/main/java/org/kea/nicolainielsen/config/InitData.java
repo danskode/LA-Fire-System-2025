@@ -1,5 +1,7 @@
 package org.kea.nicolainielsen.config;
 
+import org.kea.nicolainielsen.alarm.AlarmModel;
+import org.kea.nicolainielsen.alarm.AlarmServiceImpl;
 import org.kea.nicolainielsen.fire.FireModel;
 import org.kea.nicolainielsen.fire.FireServiceImpl;
 import org.kea.nicolainielsen.siren.SirenModel;
@@ -21,6 +23,8 @@ public class InitData implements CommandLineRunner {
     private SirenServiceImpl sirenServiceImpl;
     @Autowired
     private SirenRepository sirenRepository;
+    @Autowired
+    private AlarmServiceImpl alarmServiceImpl;
 
 
     @Override
@@ -55,6 +59,13 @@ public class InitData implements CommandLineRunner {
         sirenServiceImpl.save(sirenModel1);
 
         // Insert demo alarm ...
+        AlarmModel alarmModel1 = new AlarmModel();
+        alarmModel1.setSirenID(1);
+        alarmModel1.setFireID(1);
+        alarmModel1.setAlarmStarted(LocalDateTime.now());
+        alarmModel1.setAlarmEnded(LocalDateTime.now());
+        alarmModel1.setActive(true);
+        alarmServiceImpl.save(alarmModel1);
 
     }
 

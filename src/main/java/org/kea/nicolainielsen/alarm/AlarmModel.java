@@ -15,13 +15,10 @@ public class AlarmModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    int sirenID;
-    int fireID;
-
-    LocalDateTime alarmStarted;
-    LocalDateTime alarmEnded;
-
-    boolean active;
+    private int sirenID;
+    private int fireID;
+    private LocalDateTime alarmStarted;
+    private LocalDateTime alarmEnded;
+    private boolean active;
 
 }
