@@ -72,7 +72,7 @@ public class FireController {
     }
 
     //Delete a fire by its id ...
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFireById(@PathVariable int id) {
         FireModel deleteMe = fireService.getFireModelbyID(id);
         fireServiceImpl.delete(deleteMe);

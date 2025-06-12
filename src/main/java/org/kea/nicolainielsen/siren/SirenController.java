@@ -31,7 +31,7 @@ public class SirenController {
         return ResponseEntity.ok(sirenService.findAllSirens());
     }
 
-    // indById ...
+    // Find by id ...
 
     @GetMapping("{id}")
     public ResponseEntity<SirenModel>  getSireneModelbyID(@PathVariable Integer id) {
@@ -76,7 +76,7 @@ public class SirenController {
 
     // Delete siren ...
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteSiren(@PathVariable int id) {
         SirenModel deleteMe = sirenServiceImpl.getSireneModelbyID(id);
         sirenServiceImpl.delete(deleteMe);
