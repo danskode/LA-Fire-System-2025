@@ -10,6 +10,10 @@ public interface AlarmService {
 
     public List<AlarmModel> findAll();
 
-    void delete(AlarmModel alarm);
+    public void delete(AlarmModel alarm);
+
+    public void createAlarmAndAssignNearbySirens(int fireId, double radiusKm);
+
+    public List<AlarmModel> findByFireIdAndActiveTrue(int fireId);
 
 }

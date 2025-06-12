@@ -38,7 +38,6 @@ public class InitData implements CommandLineRunner {
         fireModel1.setLatitude(34.0100);
         fireModel1.setLongitude(-118.4960);
         fireModel1.setActive(true);
-        fireModel1.setStartTime(LocalDateTime.now().minusHours(1));
         fireServiceImpl.save(fireModel1);
 
         FireModel fireModel2 = new FireModel();
@@ -46,8 +45,6 @@ public class InitData implements CommandLineRunner {
         fireModel2.setLatitude(34.0356);
         fireModel2.setLongitude(-118.5153);
         fireModel2.setActive(false);
-        fireModel2.setStartTime(LocalDateTime.now().minusDays(1));
-        fireModel2.setEndTime(LocalDateTime.now().minusHours(12));
         fireServiceImpl.save(fireModel2);
 
         // Insert demo sirens

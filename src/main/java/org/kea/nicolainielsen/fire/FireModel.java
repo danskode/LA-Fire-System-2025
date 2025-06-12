@@ -22,17 +22,18 @@ public class FireModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(length = 100, nullable = false)
     private String name;
+
     @Column(nullable = false)
     private double latitude;
+
     @Column(nullable = false)
     private double longitude;
+
     @Column(nullable = false)
     private boolean active;
-
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
 
     @OneToMany(mappedBy = "fire", cascade = CascadeType.ALL)
     @JsonIgnore

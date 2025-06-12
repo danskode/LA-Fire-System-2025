@@ -28,7 +28,6 @@ public class AlarmModel {
 
     private LocalDateTime alarmStarted;
     private LocalDateTime alarmEnded;
-
     private boolean active;
 
 }

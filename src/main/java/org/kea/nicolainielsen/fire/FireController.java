@@ -63,8 +63,6 @@ public class FireController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         existingFireModel.setName(updatedFireModel.getName());
-        existingFireModel.setStartTime(updatedFireModel.getStartTime());
-        existingFireModel.setEndTime(updatedFireModel.getEndTime());
         existingFireModel.setLongitude(updatedFireModel.getLongitude());
         existingFireModel.setLatitude(updatedFireModel.getLatitude());
         existingFireModel.setActive(updatedFireModel.isActive());
