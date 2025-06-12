@@ -1,4 +1,5 @@
-function createFire() {
+function createFire(event) {
+
     const fireNameInput = document.getElementById("fireName");
     const latitudeInput = document.getElementById("latitude");
     const longitudeInput = document.getElementById("longitude");
@@ -28,6 +29,7 @@ function createFire() {
                     fireNameInput.value = "";
                     latitudeInput.value = "";
                     longitudeInput.value = "";
+                    loadMain()
                 } else {
                     alert("Error adding new fire.");
                 }
@@ -37,9 +39,10 @@ function createFire() {
                 alert("Error adding new fire.");
             });
     } else {
-        alert("You need a name, latitude og longitude to add a new fire.");
+        alert("You need a name, latitude and longitude to add a new fire.");
     }
 }
+
 
 function loadMain() {
     fetch("/api/fires/active")
@@ -88,7 +91,6 @@ function loadMain() {
                     <br>
                     <h1>Register new fire 🔥</h1>
                     <div>
-                        <form id="fireName">
                           <label for="fireName">Name fire:</label>
                           <input type="text" id="fireName" placeholder="Name fire">
                           <label for="latitude">Latitude:</label>
@@ -96,7 +98,6 @@ function loadMain() {
                           <label for="longitude">Longitude:</label>
                           <input type="number" step="any" id="longitude" placeholder="Add longitude">
                           <button onclick="createFire()">Save and activate</button>
-                      </form>
                     </div>`
 
             content.innerHTML = html;
