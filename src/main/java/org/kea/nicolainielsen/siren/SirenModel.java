@@ -39,7 +39,7 @@ public class SirenModel {
     @Column(nullable = false)
     private boolean functional;
 
-    private LocalDateTime lastActived;
+    private LocalDateTime lastActivated;
 
     @OneToMany(mappedBy = "siren", cascade = CascadeType.ALL)
     @JsonIgnore

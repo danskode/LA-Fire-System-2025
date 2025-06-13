@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -65,6 +66,7 @@ public class SirenController {
         existingSirenModel.setLongitude(updatedSirenModel.getLongitude());
         existingSirenModel.setActive(updatedSirenModel.isActive());
         existingSirenModel.setFunctional(updatedSirenModel.isFunctional());
+        existingSirenModel.setLastActivated(LocalDateTime.now());
 
         SirenModel savedSirenModel = sirenService.save(existingSirenModel);
         return new ResponseEntity<>(savedSirenModel, HttpStatus.OK);

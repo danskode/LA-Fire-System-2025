@@ -1,5 +1,6 @@
 package org.kea.nicolainielsen.alarm;
 
+import org.hibernate.grammars.hql.HqlParser;
 import org.hibernate.loader.ast.internal.SingleIdArrayLoadPlan;
 import org.kea.nicolainielsen.config.GeoTools;
 import org.kea.nicolainielsen.fire.FireModel;
@@ -71,7 +72,7 @@ public class AlarmServiceImpl implements AlarmService {
                 alarmRepository.save(alarm);
 
                 siren.setActive(true);
-                siren.setLastActived(LocalDateTime.now());
+                siren.setLastActivated(LocalDateTime.now());
                 sirenServiceImpl.save(siren);
                 System.out.println("Alarm created for siren: " + siren.getName());
             }
@@ -102,7 +103,7 @@ public class AlarmServiceImpl implements AlarmService {
 
             // Opdater siren
             SirenModel siren = alarm.getSiren();
-            siren.setLastActived(LocalDateTime.now());
+            siren.setLastActivated(LocalDateTime.now());
             // Tilføj eventuelt andre opdateringer af siren her
             sirenRepository.save(siren);
         }

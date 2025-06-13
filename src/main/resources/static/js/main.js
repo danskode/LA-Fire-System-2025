@@ -256,7 +256,7 @@ function loadSirens() {
 
             // Tabeloverskrifter
             let tr = document.createElement("tr");
-            ["ID", "Navn", "Latitude", "Longitude", "Aktiv", "Funktionel"].forEach(header => {
+            ["ID", "Name", "Latitude", "Longitude", "Active", "Functionel", "Last Activated"].forEach(header => {
                 const th = document.createElement("th");
                 th.textContent = header;
                 tr.appendChild(th);
@@ -271,8 +271,10 @@ function loadSirens() {
                     <td>${siren.name}</td>
                     <td>${siren.latitude}</td>
                     <td>${siren.longitude}</td>
-                    <td>${siren.active}</td>
+                    <td>${siren.active ? "🔥 DANGER ZONE" : "🌿 Peace"}</td>
                     <td>${siren.functional}</td>
+                    <td>${siren.lastActivated}</td>
+                    <td><button onclick="deleteSiren(${siren.id})">Delete siren</button></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -280,18 +282,21 @@ function loadSirens() {
             // Formular-række i bunden
             const formRow = document.createElement("tr");
             formRow.innerHTML = `
-                <td>Ny</td>
-                <td><input type="text" id="newSirenName" placeholder="Navn"></td>
+                <td>New</td>
+                <td><input type="text" id="newSirenName" placeholder="Name"></td>
                 <td><input type="number" step="any" id="newSirenLat" placeholder="Latitude"></td>
                 <td><input type="number" step="any" id="newSirenLng" placeholder="Longitude"></td>
                 <td>-</td>
                 <td>
                     <select id="newSirenFunctional">
-                        <option value="true">Ja</option>
-                        <option value="false">Nej</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
                     </select>
-                    <button onclick="createSiren()">➕</button>
                 </td>
+                <td>
+                    <button onclick="createSiren()">➕ Add siren</button>
+                </td>
+                <td></td>
             `;
             tbody.appendChild(formRow);
 
@@ -313,7 +318,7 @@ function createSiren() {
     const functional = document.getElementById("newSirenFunctional").value === "true";
 
     if (!name || isNaN(lat) || isNaN(lng)) {
-        alert("Udfyld navn, latitude og longitude.");
+        alert("Fill out name, latitude and longitude.");
         return;
     }
 
@@ -334,19 +339,28 @@ function createSiren() {
     })
         .then(response => {
             if (response.ok) {
-                alert("Siren tilføjet!");
+                alert("Siren added!");
                 loadSirens(); // genindlæs for at vise den nye
             } else {
-                alert("Kunne ikke tilføje siren.");
+                alert("Couldn't add siren.");
             }
         })
         .catch(error => {
-            console.error("Fejl:", error);
-            alert("Kunne ikke tilføje siren.");
+            console.error("Error:", error);
+            alert("Couldn't add siren.");
         });
 }
 
-
+function deleteSiren(id) {
+    fetch(`/api/sirens/${id}`, {
+        method: "DELETE"
+    })
+    .then(response => {
+        if (response.ok) {
+            loadSirens();
+        }
+    })
+}
 
 function startAlarm(){
         console.log("Starting sirens");
