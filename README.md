@@ -3,7 +3,7 @@
 
 LA Wild Fire er et full-stack REST webapplikationsprojekt udviklet som eksamensopgave. Projektet simulerer et intelligent varslingssystem, der hjælper brandvæsnet i Los Angeles med at overvåge og håndtere brande digitalt – i realtid.
 
-[Demo af LA Wild Fire](docs/LAWildFires.gif)
+![Demo af LA Wild Fire](docs/LAWildFires.gif)
 
 ---
 
