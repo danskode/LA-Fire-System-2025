@@ -432,11 +432,63 @@ function submitSirenEdit() {
 
 }
 
-
-
 function startAlarm(){
         console.log("Starting sirens");
 }
 
 window.onload = loadMain;
 
+document.addEventListener("DOMContentLoaded", function () {
+    // Initialisér kort
+    const map = L.map('map').setView([34.01, -118.496], 12);
+
+    const fireIcon = L.divIcon({
+        html: '🔥',
+        className: 'emoji-icon',
+        iconSize: [48, 48]
+    });
+
+    // Tilføj baggrundslag
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Get fire and add to map ...
+    fetch('/api/fires/active')
+        .then(response => response.json())
+        .then(fires => {
+            fires.forEach(fire => {
+                if (fire.latitude && fire.longitude) {
+                    L.marker([fire.latitude, fire.longitude], { icon: fireIcon })
+                        .addTo(map)
+                        .bindPopup(`<strong>${fire.name}</strong><br>🔥 Active fire 🔥`);
+                }
+            });
+        })
+        .catch(error => {
+            console.error("Fejl ved hentning af brande:", error);
+        });
+
+    const alarmIcon = L.divIcon({
+        html: '🚨',
+        className: 'emoji-icon',
+        iconSize: [48, 48]
+    });
+
+    // Get sirens and add to map ...
+    fetch('/api/sirens')
+        .then(response => response.json())
+        .then(sirens => {
+            sirens.forEach(siren => {
+                if (siren.latitude && siren.longitude) {
+                    L.marker([siren.latitude, siren.longitude], { icon: alarmIcon })
+                        .addTo(map)
+                        .bindPopup(`<strong>${siren.name}</strong><br>🔊 Siren 🔊`);
+                }
+            });
+        })
+        .catch(error => {
+            console.error("Fejl ved hentning af sirener:", error);
+        });
+
+});
