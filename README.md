@@ -20,7 +20,7 @@ Systemet er udviklet til at understøtte Los Angeles brandvæsens behov for:
 ---
 
 ## 🛠️ Teknologier
-- **Backend**: Java, Spring Boot, REST API, JPA, H2/MySQL
+- **Backend**: Java, Spring Boot, REST API, JPA, H2
 - **Frontend**: HTML, CSS, JavaScript, Leaflet.js (kortvisning)
 - **Test**: JUnit, Mockito
 - **Database**: Relationsmodel med entiteter for Sirens, Fires og Alarms
