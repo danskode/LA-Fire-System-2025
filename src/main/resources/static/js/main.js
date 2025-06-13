@@ -275,6 +275,24 @@ function loadSirens() {
                     <td>${siren.functional}</td>
                     <td>${siren.lastActivated}</td>
                     <td><button onclick="deleteSiren(${siren.id})">Delete siren</button></td>
+                    <td><button onclick="editSiren(${siren.id})">Edit siren</button></td>
+                    <div id="editSirenModal" style="display: none; position: fixed; top: 20%; left: 30%; background: white; padding: 20px; border: 1px solid black;">
+                        <h2>Edit Siren</h2>
+                        <input type="hidden" id="editSirenId">
+                        <label>Name:</label>
+                        <input type="text" id="editSirenName"><br/>
+                        <label>Latitude:</label>
+                        <input type="number" step="any" id="editSirenLatitude"><br/>
+                        <label>Longitude:</label>
+                        <input type="number" step="any" id="editSirenLongitude"><br/>
+                        <label>Active:</label>
+                        <input type="checkbox" id="editSirenActive"><br/>
+                        <label>Functional:</label>
+                        <input type="checkbox" id="editSirenFunctional"><br/>
+                        <button onclick="submitSirenEdit()">Save</button>
+                        <button onclick="closeModal()">Cancel</button>
+                    </div>
+
                 `;
                 tbody.appendChild(tr);
             });
@@ -361,6 +379,58 @@ function deleteSiren(id) {
         }
     })
 }
+
+function editSiren(id) {
+    fetch(`/api/sirens/${id}`)
+        .then(response => response.json())
+        .then(siren => {
+            document.getElementById("editSirenId").value = siren.id;
+            document.getElementById("editSirenName").value = siren.name;
+            document.getElementById("editSirenLatitude").value = siren.latitude;
+            document.getElementById("editSirenLongitude").value = siren.longitude;
+            document.getElementById("editSirenActive").checked = siren.active;
+            document.getElementById("editSirenFunctional").checked = siren.functional;
+            document.getElementById("editSirenModal").style.display = "block";
+        })
+        .catch(error => {
+            console.error("Error loading siren data:", error);
+            alert("Failed to load siren data.");
+        });
+}
+
+function submitSirenEdit() {
+    const id = document.getElementById("editSirenId").value;
+    const updatedSiren = {
+        name: document.getElementById("editSirenName").value,
+        latitude: parseFloat(document.getElementById("editSirenLatitude").value),
+        longitude: parseFloat(document.getElementById("editSirenLongitude").value),
+        active: document.getElementById("editSirenActive").checked,
+        functional: document.getElementById("editSirenFunctional").checked
+    };
+
+    fetch(`/api/sirens/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(updatedSiren)
+    })
+        .then(response => {
+            if (response.ok) {
+                alert("Siren updated!");
+                loadSirens();
+            } else {
+                alert("Failed to update siren.");
+            }
+        })
+        .catch(error => {
+            console.error("Error updating siren:", error);
+            alert("Error occurred while updating siren.");
+        });
+
+}
+
+
 
 function startAlarm(){
         console.log("Starting sirens");

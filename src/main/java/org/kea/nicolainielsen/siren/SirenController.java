@@ -66,7 +66,7 @@ public class SirenController {
         existingSirenModel.setLongitude(updatedSirenModel.getLongitude());
         existingSirenModel.setActive(updatedSirenModel.isActive());
         existingSirenModel.setFunctional(updatedSirenModel.isFunctional());
-        existingSirenModel.setLastActivated(LocalDateTime.now());
+        // existingSirenModel.setLastActivated(LocalDateTime.now());
 
         SirenModel savedSirenModel = sirenService.save(existingSirenModel);
         return new ResponseEntity<>(savedSirenModel, HttpStatus.OK);
