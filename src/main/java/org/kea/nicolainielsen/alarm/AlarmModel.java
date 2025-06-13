@@ -1,5 +1,6 @@
 package org.kea.nicolainielsen.alarm;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class AlarmModel {
 
     @ManyToOne
     @JoinColumn(name = "fire_id", nullable = false)
+    @JsonBackReference
     private FireModel fire;
 
     @ManyToOne

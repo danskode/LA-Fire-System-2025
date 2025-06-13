@@ -1,6 +1,7 @@
 package org.kea.nicolainielsen.fire;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,7 +37,7 @@ public class FireModel {
     private boolean active;
 
     @OneToMany(mappedBy = "fire", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<AlarmModel> alarms = new ArrayList<>();
 
 }

@@ -65,6 +65,7 @@ function loadMain() {
                                                 <th>Name</th>
                                                 <th>Latitude</th>
                                                 <th>Longitude</th>
+                                                <th>Started</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -77,6 +78,7 @@ function loadMain() {
                         <td>${fire.name}</td>
                         <td>${fire.latitude}</td>
                         <td>${fire.longitude}</td>
+                        <td>${fire.alarms && fire.alarms.length > 0 ? fire.alarms[0].alarmStarted : 'No alarm'}</td>
                         <td>
                             <button onclick="startAlarmsForFire(${fire.id})">Start sirens</button>
                             <button onclick="stopAlarmsForFire(${fire.id})">Stop sirens</button>
